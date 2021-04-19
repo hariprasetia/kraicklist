@@ -79,7 +79,7 @@ func (s *Searcher) Load(filepath string) error {
 	if err != nil {
 		return fmt.Errorf("unable to initialize gzip reader due: %v", err)
 	}
-	// read the reader using scanner to contstruct records
+	// read the reader using scanner to construct records
 	var records []Record
 	cs := bufio.NewScanner(reader)
 	for cs.Scan() {
@@ -98,8 +98,10 @@ func (s *Searcher) Load(filepath string) error {
 func (s *Searcher) Search(query string) ([]Record, error) {
 	var result []Record
 	for _, record := range s.records {
+		// add string manipulation to avoid case sensitive
 		title := strings.ToLower(record.Title)
 		content := strings.ToLower(record.Content)
+		// add search query in tags
 		tags := strings.ToLower(strings.Join(record.Tags, ","))
 		query := strings.ToLower(query)
 		if strings.Contains(title, query) || strings.Contains(tags, query) || strings.Contains(content, " "+query+" ") {
