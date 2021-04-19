@@ -43,22 +43,22 @@ func handleSearch(s *Searcher) http.HandlerFunc {
 			q := r.URL.Query().Get("q")
 			if len(q) == 0 {
 				w.WriteHeader(http.StatusBadRequest)
-				w.Write([]byte("missing search query in query params"))
+				_, _ = w.Write([]byte("missing search query in query params"))
 				return
 			}
 			// search relevant records
 			records, err := s.Search(q)
 			if err != nil {
 				w.WriteHeader(http.StatusInternalServerError)
-				w.Write([]byte(err.Error()))
+				_, _ = w.Write([]byte(err.Error()))
 				return
 			}
 			// output success response
 			buf := new(bytes.Buffer)
 			encoder := json.NewEncoder(buf)
-			encoder.Encode(records)
+			_ = encoder.Encode(records)
 			w.Header().Set("Content-Type", "application/json")
-			w.Write(buf.Bytes())
+			_, _ = w.Write(buf.Bytes())
 		},
 	)
 }
@@ -98,7 +98,11 @@ func (s *Searcher) Load(filepath string) error {
 func (s *Searcher) Search(query string) ([]Record, error) {
 	var result []Record
 	for _, record := range s.records {
-		if strings.Contains(record.Title, query) || strings.Contains(record.Content, query) {
+		title := strings.ToLower(record.Title)
+		content := strings.ToLower(record.Content)
+		tags := strings.ToLower(strings.Join(record.Tags, ","))
+		query := strings.ToLower(query)
+		if strings.Contains(title, query) || strings.Contains(tags, query) || strings.Contains(content, " "+query+" ") {
 			result = append(result, record)
 		}
 	}
