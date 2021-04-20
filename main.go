@@ -104,7 +104,8 @@ func (s *Searcher) Search(query string) ([]Record, error) {
 		// add search query in tags
 		tags := strings.ToLower(strings.Join(record.Tags, ","))
 		query := strings.ToLower(query)
-		if strings.Contains(title, query) || strings.Contains(tags, query) || strings.Contains(content, " "+query+" ") {
+		// find specific words in title or in content and tags
+		if strings.Contains(title, query) || (strings.Contains(content, " "+query+" ") && strings.Contains(tags, query)) {
 			result = append(result, record)
 		}
 	}

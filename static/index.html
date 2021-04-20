@@ -38,14 +38,14 @@
                 const rows = [];
                 for (let result of results) {
                     rows.push(
-                        `
-                            <li>
-                                <div>
-                                    <p>${result.title}</p>
-                                    <p>${result.content}</p>
-                                </div>
-                            </li>
-                        `
+                        `<li>
+                            <div>
+                                <p><strong>${result.title}</strong></p>
+                                <p>${result.content}</p>
+                                <img src="${result.image_urls[0]}" alt="${result.title}" width="150" height="150">
+                                <hr>
+                            </div>
+                           </li>`
                     );
                 }
                 resultList.innerHTML = rows.join(" ");
